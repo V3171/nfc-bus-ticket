@@ -37,15 +37,14 @@ public class CheckTicketActivity extends Activity {
 	protected void onNewIntent(Intent intent) {
 		tag = NfcUtils.getTag(intent);
 		
-		NdefMessage message = NfcUtils.readTag(this.getIntent());
+		NdefMessage message = NfcUtils.readTag(intent);
 		if (message != null) {
-			NfcUtils.toast("msg != null", context);
 			String prefix = new String(message.getRecords()[0].getPayload());
 			if (prefix.equals(SellTicketActivity.PREFIX) && (message.getRecords().length > 3)) {
 				tagId = new String(message.getRecords()[1].getPayload());
-				NfcUtils.toast("tagId" + tagId, context);
 				String numberTicket = new String(message.getRecords()[2].getPayload());
 				int remainTicket = Integer.parseInt(numberTicket) - 1;
+				String prevTime = new String(message.getRecords()[3].getPayload());
 				if (remainTicket >= 0) {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 					String currentTime = dateFormat.format(new Date());
@@ -62,7 +61,7 @@ public class CheckTicketActivity extends Activity {
 						
 						AlertDialog dialog = new AlertDialog.Builder(this).create();
 						dialog.setTitle("Notice");
-						dialog.setMessage("Valid tag! Tag id " + tagId + " is remaining " + remainTicket + " times.");
+						dialog.setMessage("Valid tag! Tag id " + tagId + " is remaining " + remainTicket + " times.\nPrevious checked time: " + prevTime + ".\nLast checked time:" + currentTime);
 						
 						dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 							
@@ -79,7 +78,7 @@ public class CheckTicketActivity extends Activity {
 			}
 		}
 		
-		/*String notice = "Invalid tag! Do you want sell ticket for this tag?";
+		String notice = "Invalid tag! Do you want sell ticket for this tag?";
 		if (tagId != null) {
 			notice = "Tag id " + tagId + "has expired tickets! Do you want sell ticket for this tag?";
 		}
@@ -110,7 +109,7 @@ public class CheckTicketActivity extends Activity {
 			}
 		});
 		
-		dialog.show();*/
+		dialog.show();
 	}
 
 	@Override
