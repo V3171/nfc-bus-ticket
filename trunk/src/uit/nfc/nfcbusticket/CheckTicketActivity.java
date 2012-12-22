@@ -39,9 +39,11 @@ public class CheckTicketActivity extends Activity {
 		
 		NdefMessage message = NfcUtils.readTag(this.getIntent());
 		if (message != null) {
+			NfcUtils.toast("msg != null", context);
 			String prefix = new String(message.getRecords()[0].getPayload());
-			if (prefix.equals(SellTicketActivity.PREFIX) && (message.getRecords().length > 1)) {
+			if (prefix.equals(SellTicketActivity.PREFIX) && (message.getRecords().length > 3)) {
 				tagId = new String(message.getRecords()[1].getPayload());
+				NfcUtils.toast("tagId" + tagId, context);
 				String numberTicket = new String(message.getRecords()[2].getPayload());
 				int remainTicket = Integer.parseInt(numberTicket) - 1;
 				if (remainTicket >= 0) {
@@ -77,7 +79,7 @@ public class CheckTicketActivity extends Activity {
 			}
 		}
 		
-		String notice = "Invalid tag! Do you want sell ticket for this tag?";
+		/*String notice = "Invalid tag! Do you want sell ticket for this tag?";
 		if (tagId != null) {
 			notice = "Tag id " + tagId + "has expired tickets! Do you want sell ticket for this tag?";
 		}
@@ -108,7 +110,7 @@ public class CheckTicketActivity extends Activity {
 			}
 		});
 		
-		dialog.show();
+		dialog.show();*/
 	}
 
 	@Override
