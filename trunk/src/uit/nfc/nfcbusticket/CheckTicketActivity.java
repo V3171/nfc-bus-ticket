@@ -1,13 +1,19 @@
 package uit.nfc.nfcbusticket;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import uit.nfc.utils.NfcUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +21,7 @@ import android.view.Menu;
 public class CheckTicketActivity extends Activity {
 
 	private Tag tag;
+	private String tagId;
 	private Context context;
 	
     @Override
@@ -23,27 +30,33 @@ public class CheckTicketActivity extends Activity {
         setContentView(R.layout.activity_check_ticket);
         
         context = this;
+        tagId = null;
     }
 
 	@Override
 	protected void onNewIntent(Intent intent) {
 		tag = NfcUtils.getTag(intent);
-    	
-		NdefMessage message = NfcUtils.readTag(intent);
+		
+		NdefMessage message = NfcUtils.readTag(this.getIntent());
 		if (message != null) {
 			String prefix = new String(message.getRecords()[0].getPayload());
 			if (prefix.equals(SellTicketActivity.PREFIX) && (message.getRecords().length > 1)) {
-				String numberTicket = new String(message.getRecords()[1].getPayload());
+				tagId = new String(message.getRecords()[1].getPayload());
+				String numberTicket = new String(message.getRecords()[2].getPayload());
 				int remainTicket = Integer.parseInt(numberTicket) - 1;
 				if (remainTicket >= 0) {
-					NdefRecord[] records = new NdefRecord[2];
+					SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+					String currentTime = dateFormat.format(new Date());
+					
+					NdefRecord[] records = new NdefRecord[4];
 					records[0] = NfcUtils.createNdefTextRecord(SellTicketActivity.PREFIX);
-					records[1] = NfcUtils.createNdefTextRecord(String.valueOf(remainTicket));
+					records[1] = NfcUtils.createNdefTextRecord(tagId);
+					records[2] = NfcUtils.createNdefTextRecord(String.valueOf(remainTicket));
+					records[3] = NfcUtils.createNdefTextRecord(currentTime);
 					NdefMessage msg = new NdefMessage(records);
 					boolean success = NfcUtils.writeTag(tag, msg, context);
 					
 					if (success) {
-						String tagId = tag.getId().toString();
 						
 						AlertDialog dialog = new AlertDialog.Builder(this).create();
 						dialog.setTitle("Notice");
@@ -64,15 +77,21 @@ public class CheckTicketActivity extends Activity {
 			}
 		}
 		
+		String notice = "Invalid tag! Do you want sell ticket for this tag?";
+		if (tagId != null) {
+			notice = "Tag id " + tagId + "has expired tickets! Do you want sell ticket for this tag?";
+		}
+		
 		AlertDialog dialog = new AlertDialog.Builder(this).create();
 		dialog.setTitle("Notice");
-		dialog.setMessage("Invalid tag or Tag has expired tickets! Do you want sell ticket for this tag?");
+		dialog.setMessage(notice);
 		
 		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int which) {
 				Bundle bundle = new Bundle();
 				bundle.putParcelable("TagDetected", tag);
+				bundle.putString("TagId", tagId);
 				
 				Intent sellTicket = new Intent(CheckTicketActivity.this, SellTicketActivity.class);
 				sellTicket.putExtras(bundle);
