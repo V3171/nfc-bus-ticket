@@ -80,7 +80,7 @@ public class CheckTicketActivity extends Activity {
 		
 		String notice = "Invalid tag! Do you want sell ticket for this tag?";
 		if (tagId != null) {
-			notice = "Tag id " + tagId + "has expired tickets! Do you want sell ticket for this tag?";
+			notice = "Tag id " + tagId + " has expired tickets! Do you want sell ticket for this tag?";
 		}
 		
 		AlertDialog dialog = new AlertDialog.Builder(this).create();
