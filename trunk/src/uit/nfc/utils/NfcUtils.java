@@ -14,7 +14,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
-import android.nfc.tech.NfcA;
 import android.os.Parcelable;
 import android.widget.Toast;
 
@@ -26,11 +25,27 @@ public class NfcUtils {
 
 	public static Tag getTag(Intent intent) {
 		Tag tag = null;
-		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())
+				|| NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 			tag = (Tag)intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 		}
 		
 		return tag;
+	}
+	
+	public static void enableNdefExchangeMode(Activity activity) {
+		NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
+		PendingIntent pendingIntent = PendingIntent.getActivity(activity, 0,
+											new Intent(activity, activity.getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+		IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+		
+		nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[] {tagDetected}, null);
+	}
+	
+	public static void disableNdefExchangeMode(Activity activity) {
+		NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
+		
+		nfcAdapter.disableForegroundDispatch(activity);
 	}
 	
 	public static void enableTagWriteMode(Activity activity) {
@@ -107,7 +122,8 @@ public class NfcUtils {
 		NdefMessage message = null;
 		String action = intent.getAction();
 		
-		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
+		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)
+				|| NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
 			Parcelable[] rawMessage = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
 			if (rawMessage != null) {
 				message = (NdefMessage)rawMessage[0];

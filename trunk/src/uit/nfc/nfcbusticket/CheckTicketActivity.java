@@ -6,14 +6,11 @@ import java.util.Date;
 import uit.nfc.utils.NfcUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
-import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.view.Menu;
@@ -36,8 +33,20 @@ public class CheckTicketActivity extends Activity {
 	@Override
 	protected void onNewIntent(Intent intent) {
 		tag = NfcUtils.getTag(intent);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		NfcUtils.disableTagWriteMode(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		tag = NfcUtils.getTag(this.getIntent());
 		
-		NdefMessage message = NfcUtils.readTag(intent);
+		NdefMessage message = NfcUtils.readTag(this.getIntent());
 		if (message != null) {
 			String prefix = new String(message.getRecords()[0].getPayload());
 			if (prefix.equals(SellTicketActivity.PREFIX) && (message.getRecords().length > 3)) {
@@ -91,7 +100,6 @@ public class CheckTicketActivity extends Activity {
 			
 			public void onClick(DialogInterface dialog, int which) {
 				Bundle bundle = new Bundle();
-				bundle.putParcelable("TagDetected", tag);
 				bundle.putString("TagId", tagId);
 				
 				Intent sellTicket = new Intent(CheckTicketActivity.this, SellTicketActivity.class);
@@ -110,17 +118,7 @@ public class CheckTicketActivity extends Activity {
 		});
 		
 		dialog.show();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		NfcUtils.disableTagWriteMode(this);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
+		
 		NfcUtils.enableTagWriteMode(this);
 	}
 
