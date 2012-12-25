@@ -58,7 +58,7 @@ public class SellTicketActivity extends Activity {
 				numberTicket = editTicket.getText().toString();
 				
 				if (tagId.isEmpty() || numberTicket.isEmpty() || numberTicket.startsWith("0")) {
-					NfcUtils.toast("Please enter Tag Id or number of tickets!", context);
+					NfcUtils.toast("Please enter Tag Id or Number of tickets!", context);
 				} else {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 					String currentTime = dateFormat.format(new Date());
