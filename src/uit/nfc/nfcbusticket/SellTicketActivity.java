@@ -28,6 +28,10 @@ public class SellTicketActivity extends Activity {
 	private EditText editTicket;
 	private Button buttonWrite;
 	
+	private NdefMessage message;
+	private String tagId;
+	private String numberTicket;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +44,6 @@ public class SellTicketActivity extends Activity {
         
         Bundle b = this.getIntent().getExtras();
         if (b != null) {
-        	tag = (Tag)b.getParcelable("TagDetected");
         	String tagId = b.getString("TagId");
         	if (tagId != null) {
         		editId.setText(tagId);
@@ -51,8 +54,8 @@ public class SellTicketActivity extends Activity {
         buttonWrite.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
-				String tagId = editId.getText().toString();
-				String numberTicket = editTicket.getText().toString();
+				tagId = editId.getText().toString();
+				numberTicket = editTicket.getText().toString();
 				
 				if (tagId.isEmpty() || numberTicket.isEmpty() || numberTicket.startsWith("0")) {
 					NfcUtils.toast("Please enter Tag Id or number of tickets!", context);
@@ -65,24 +68,10 @@ public class SellTicketActivity extends Activity {
 					records[1] = NfcUtils.createNdefTextRecord(tagId);
 					records[2] = NfcUtils.createNdefTextRecord(numberTicket);
 					records[3] = NfcUtils.createNdefTextRecord(currentTime);
-					NdefMessage message = new NdefMessage(records);
-					boolean success = NfcUtils.writeTag(tag, message, context);
+					message = new NdefMessage(records);
 					
-					if (success) {
-						
-						AlertDialog dialog = new AlertDialog.Builder(context).create();
-						dialog.setTitle("Notice");
-						dialog.setMessage("Valid tag! Tag id " + tagId + " is remaining " + numberTicket + " times.");
-						
-						dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-							
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.cancel();
-							}
-						});
-						
-						dialog.show();
-					}
+					NfcUtils.toast("Please touch tag to write!", v.getContext());
+					NfcUtils.enableTagWriteMode((Activity)v.getContext());
 				}
 			}
 		});
@@ -91,6 +80,23 @@ public class SellTicketActivity extends Activity {
     @Override
 	protected void onNewIntent(Intent intent) {
     	tag = NfcUtils.getTag(intent);
+    	
+    	boolean success = NfcUtils.writeTag(tag, message, context);
+		if (success) {
+			
+			AlertDialog dialog = new AlertDialog.Builder(context).create();
+			dialog.setTitle("Notice");
+			dialog.setMessage("Valid tag! Tag id " + tagId + " is remaining " + numberTicket + " times.");
+			
+			dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			
+			dialog.show();
+		}
 	}
 
 	@Override
