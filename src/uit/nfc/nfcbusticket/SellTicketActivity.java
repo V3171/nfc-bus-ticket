@@ -31,6 +31,7 @@ public class SellTicketActivity extends Activity {
 	private NdefMessage message;
 	private String tagId;
 	private String numberTicket;
+	private int remainTicket;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,9 +43,14 @@ public class SellTicketActivity extends Activity {
         editTicket = (EditText)findViewById(R.id.edit_ticket);
         buttonWrite = (Button)findViewById(R.id.button_write);
         
+        tagId = null;
+        numberTicket = null;
+        remainTicket = 0;
+        
         Bundle b = this.getIntent().getExtras();
         if (b != null) {
         	String tagId = b.getString("TagId");
+        	remainTicket = b.getInt("NumberTicket");
         	if (tagId != null) {
         		editId.setText(tagId);
         		editId.setEnabled(false);
@@ -62,6 +68,7 @@ public class SellTicketActivity extends Activity {
 				} else {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 					String currentTime = dateFormat.format(new Date());
+					numberTicket = String.valueOf(remainTicket + Integer.parseInt(numberTicket));
 					
 					NdefRecord[] records = new NdefRecord[4];
 					records[0] = NfcUtils.createNdefTextRecord(PREFIX);
@@ -86,7 +93,7 @@ public class SellTicketActivity extends Activity {
 			
 			AlertDialog dialog = new AlertDialog.Builder(context).create();
 			dialog.setTitle("Notice");
-			dialog.setMessage("Valid tag! Tag id " + tagId + " is remaining " + numberTicket + " times.");
+			dialog.setMessage("Tag id " + tagId + " is remaining " + numberTicket + " times.");
 			
 			dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 				

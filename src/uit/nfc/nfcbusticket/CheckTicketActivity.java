@@ -19,6 +19,9 @@ public class CheckTicketActivity extends Activity {
 
 	private Tag tag;
 	private String tagId;
+	private int numberTicket;
+	private int remainTicket;
+	private String prevTime;
 	private Context context;
 	
     @Override
@@ -28,6 +31,9 @@ public class CheckTicketActivity extends Activity {
         
         context = this;
         tagId = null;
+        numberTicket = 0;
+        remainTicket = 0;
+        prevTime = null;
     }
 
 	@Override
@@ -51,56 +57,64 @@ public class CheckTicketActivity extends Activity {
 			String prefix = new String(message.getRecords()[0].getPayload());
 			if (prefix.equals(SellTicketActivity.PREFIX) && (message.getRecords().length > 3)) {
 				tagId = new String(message.getRecords()[1].getPayload());
-				String numberTicket = new String(message.getRecords()[2].getPayload());
-				int remainTicket = Integer.parseInt(numberTicket) - 1;
-				String prevTime = new String(message.getRecords()[3].getPayload());
+				numberTicket = Integer.parseInt(new String(message.getRecords()[2].getPayload()));
+				remainTicket = numberTicket - 1;
+				prevTime = new String(message.getRecords()[3].getPayload());
 				if (remainTicket >= 0) {
-					SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-					String currentTime = dateFormat.format(new Date());
-					
-					NdefRecord[] records = new NdefRecord[4];
-					records[0] = NfcUtils.createNdefTextRecord(SellTicketActivity.PREFIX);
-					records[1] = NfcUtils.createNdefTextRecord(tagId);
-					records[2] = NfcUtils.createNdefTextRecord(String.valueOf(remainTicket));
-					records[3] = NfcUtils.createNdefTextRecord(currentTime);
-					NdefMessage msg = new NdefMessage(records);
-					boolean success = NfcUtils.writeTag(tag, msg, context);
-					
-					if (success) {
-						
-						AlertDialog dialog = new AlertDialog.Builder(this).create();
-						dialog.setTitle("Notice");
-						dialog.setMessage("Valid tag! Tag id " + tagId + " is remaining " + remainTicket + " times.\nPrevious checked time: " + prevTime + ".\nLast checked time:" + currentTime);
-						
-						dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-							
-							public void onClick(DialogInterface dialog, int which) {
-								finish();
-							}
-						});
-						
-						dialog.show();
-					}
-					
+					handleValidTag();
 					return;
 				}
 			}
 		}
 		
-		String notice = "Invalid tag! Do you want sell ticket for this tag?";
-		if (tagId != null) {
-			notice = "Tag id " + tagId + " has expired tickets! Do you want sell ticket for this tag?";
-		}
+		handleInvalidTag();
 		
-		AlertDialog dialog = new AlertDialog.Builder(this).create();
+		NfcUtils.enableTagWriteMode(this);
+	}
+	
+	private void handleValidTag() {
+		AlertDialog dialog = new AlertDialog.Builder(context).create();
 		dialog.setTitle("Notice");
-		dialog.setMessage(notice);
+		dialog.setMessage("Tag id " + tagId + " is remaining " + numberTicket + " times.\nPrevious checked time: " + prevTime + ".\nDo you want check or sell ticket?");
 		
-		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+		dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Check", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+				String currentTime = dateFormat.format(new Date());
+				
+				NdefRecord[] records = new NdefRecord[4];
+				records[0] = NfcUtils.createNdefTextRecord(SellTicketActivity.PREFIX);
+				records[1] = NfcUtils.createNdefTextRecord(tagId);
+				records[2] = NfcUtils.createNdefTextRecord(String.valueOf(remainTicket));
+				records[3] = NfcUtils.createNdefTextRecord(currentTime);
+				NdefMessage msg = new NdefMessage(records);
+				boolean success = NfcUtils.writeTag(tag, msg, context);
+				
+				if (success) {
+					
+					AlertDialog OkDialog = new AlertDialog.Builder(context).create();
+					OkDialog.setTitle("Notice");
+					OkDialog.setMessage("Tag id " + tagId + " is remaining " + remainTicket + " times.\nPrevious checked time: " + prevTime + ".\nLast checked time:" + currentTime + ".\nWelcome you!");
+					
+					OkDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+						
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					});
+					
+					OkDialog.show();
+				}
+			}
+			
+		});
+		
+		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Sell", new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int which) {
 				Bundle bundle = new Bundle();
 				bundle.putString("TagId", tagId);
+				bundle.putInt("NumberTicket", numberTicket);
 				
 				Intent sellTicket = new Intent(CheckTicketActivity.this, SellTicketActivity.class);
 				sellTicket.putExtras(bundle);
@@ -110,7 +124,42 @@ public class CheckTicketActivity extends Activity {
 			}
 		});
 		
-		dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+		dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Done", new DialogInterface.OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {		
+				finish();
+			}
+		});
+		
+		dialog.show();
+	}
+	
+	private void handleInvalidTag() {
+		String notice = "Invalid tag! Do you want sell ticket for this tag?";
+		if (tagId != null) {
+			notice = "Tag id " + tagId + " has expired tickets! Do you want sell ticket for this tag?";
+		}
+		
+		AlertDialog dialog = new AlertDialog.Builder(context).create();
+		dialog.setTitle("Notice");
+		dialog.setMessage(notice);
+		
+		dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Yes", new DialogInterface.OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				Bundle bundle = new Bundle();
+				bundle.putString("TagId", tagId);
+				bundle.putInt("NumberTicket", numberTicket);
+				
+				Intent sellTicket = new Intent(CheckTicketActivity.this, SellTicketActivity.class);
+				sellTicket.putExtras(bundle);
+				startActivity(sellTicket);
+				
+				finish();
+			}
+		});
+		
+		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "No", new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int which) {
 				finish();
@@ -118,8 +167,6 @@ public class CheckTicketActivity extends Activity {
 		});
 		
 		dialog.show();
-		
-		NfcUtils.enableTagWriteMode(this);
 	}
 
 	@Override
