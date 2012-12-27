@@ -75,7 +75,7 @@ public class CheckTicketActivity extends Activity {
 	private void handleValidTag() {
 		AlertDialog dialog = new AlertDialog.Builder(context).create();
 		dialog.setTitle("Notice");
-		dialog.setMessage("Tag id " + tagId + " is remaining " + numberTicket + " times.\nPrevious checked time: " + prevTime + ".\nDo you want check or sell ticket?");
+		dialog.setMessage("Tag id " + tagId + " is remaining " + numberTicket + " times.\nLast checked time: " + prevTime + ".\nDo you want check or sell ticket?");
 		
 		dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Check", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
