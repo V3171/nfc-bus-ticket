@@ -25,6 +25,7 @@ public class SellTicketActivity extends Activity {
 	private Tag tag;
 	private Context context;
 	private EditText editId;
+	private EditText editRemainTicket;
 	private EditText editTicket;
 	private Button buttonWrite;
 	
@@ -32,6 +33,7 @@ public class SellTicketActivity extends Activity {
 	private String tagId;
 	private String numberTicket;
 	private int remainTicket;
+	private String currentTime;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,12 +42,14 @@ public class SellTicketActivity extends Activity {
         
         context = this;
         editId = (EditText)findViewById(R.id.edit_id);
+        editRemainTicket = (EditText)findViewById(R.id.edit_remain_ticket);
         editTicket = (EditText)findViewById(R.id.edit_ticket);
         buttonWrite = (Button)findViewById(R.id.button_write);
         
         tagId = null;
         numberTicket = null;
         remainTicket = 0;
+        currentTime = null;
         
         Bundle b = this.getIntent().getExtras();
         if (b != null) {
@@ -57,6 +61,9 @@ public class SellTicketActivity extends Activity {
         	}
         }
         
+        editRemainTicket.setText(String.valueOf(remainTicket));
+        editRemainTicket.setEnabled(false);
+        
         buttonWrite.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
@@ -67,7 +74,7 @@ public class SellTicketActivity extends Activity {
 					NfcUtils.toast("Please enter Tag Id or Number of tickets!", context);
 				} else {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-					String currentTime = dateFormat.format(new Date());
+					currentTime = dateFormat.format(new Date());
 					numberTicket = String.valueOf(remainTicket + Integer.parseInt(numberTicket));
 					
 					NdefRecord[] records = new NdefRecord[4];
@@ -93,7 +100,7 @@ public class SellTicketActivity extends Activity {
 			
 			AlertDialog dialog = new AlertDialog.Builder(context).create();
 			dialog.setTitle("Notice");
-			dialog.setMessage("Tag id " + tagId + " is remaining " + numberTicket + " times.");
+			dialog.setMessage("Tag id " + tagId + " is remaining " + numberTicket + " times.\nTime of sell: " + currentTime);
 			
 			dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 				
