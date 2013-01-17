@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="Tag&apos;s ID"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#FFFFFF" />
+                android:textColor="#D8D8D8" />
 
             <EditText
                 android:id="@+id/edit_id"
@@ -55,9 +55,9 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tickets Remaining"
+                android:text="Tickets remaining"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#FFFFFF" />
+                android:textColor="#D8D8D8" />
 
             <EditText
                 android:id="@+id/edit_remain_ticket"
@@ -84,9 +84,9 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Number of Tickets"
+                android:text="Number of tickets"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#FFFFFF" />
+                android:textColor="#D8D8D8" />
 
             <EditText
                 android:id="@+id/edit_ticket"
