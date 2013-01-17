@@ -1,86 +1,131 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/background"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <TableLayout
+        android:id="@+id/TableLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
 
-        <TextView
-            android:id="@+id/textView1"
+        <TableRow
+            android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tag&apos;s ID"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#FFFFFF" />
+            android:paddingBottom="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:paddingTop="2dp" >
 
-        <EditText
-            android:id="@+id/edit_id"
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tag&apos;s ID"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF" />
+
+            <EditText
+                android:id="@+id/edit_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_border"
+                android:ems="10"
+                android:gravity="center_vertical|right"
+                android:inputType="number"
+                android:textColor="#000000" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="number"
-            android:textColor="#FFFFFF" >
+            android:paddingBottom="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:paddingTop="2dp" >
 
-            <requestFocus />
-        </EditText>
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tickets Remaining"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF" />
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/edit_remain_ticket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_border"
+                android:ems="10"
+                android:gravity="center_vertical|right"
+                android:inputType="number"
+                android:textColor="#000000" />
+        </TableRow>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/textView3"
+        <TableRow
+            android:id="@+id/tableRow3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tickets Remaining"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#FFFFFF" />
+            android:paddingBottom="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:paddingTop="2dp" >
 
-        <EditText
-            android:id="@+id/edit_remain_ticket"
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number of Tickets"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF" />
+
+            <EditText
+                android:id="@+id/edit_ticket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_border"
+                android:ems="10"
+                android:gravity="center_vertical|right"
+                android:inputType="number"
+                android:textColor="#000000" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="number"
-            android:textColor="#FFFFFF" />
+            android:paddingBottom="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:paddingTop="2dp" >
 
-    </LinearLayout>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Number of Tickets to Buy"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#FFFFFF" />
-
-        <EditText
-            android:id="@+id/edit_ticket"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            android:textColor="#FFFFFF" />
-    </LinearLayout>
+        </TableRow>
+    </TableLayout>
 
     <Button
         android:id="@+id/button_write"
-        android:layout_width="139dp"
+        android:layout_width="134dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/TableLayout1"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_corner"
         android:text="Write on Tag"
-        android:textColor="#FFFFFF" />
+        android:textColor="#000000" />
 
-</LinearLayout>
+</RelativeLayout>
