@@ -38,8 +38,10 @@
                 android:background="@drawable/edit_text_style"
                 android:ems="10"
                 android:gravity="center_vertical|right"
+                android:hint="Tag&apos;s ID"
                 android:inputType="number"
                 android:textColor="#000000" />
+
         </TableRow>
 
         <TableRow
@@ -69,6 +71,7 @@
                 android:gravity="center_vertical|right"
                 android:inputType="number"
                 android:textColor="#000000" />
+
         </TableRow>
 
         <TableRow
@@ -96,8 +99,10 @@
                 android:background="@drawable/edit_text_style"
                 android:ems="10"
                 android:gravity="center_vertical|right"
+                android:hint="Number of tickets"
                 android:inputType="number"
                 android:textColor="#000000" />
+
         </TableRow>
     </TableLayout>
 
