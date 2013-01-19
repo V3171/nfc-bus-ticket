@@ -26,7 +26,7 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tag&apos;s ID"
+                android:text="TagID"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#D8D8D8" />
 
