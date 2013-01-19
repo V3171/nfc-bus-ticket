@@ -13,6 +13,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -63,6 +64,19 @@ public class SellTicketActivity extends Activity {
         
         editRemainTicket.setText(String.valueOf(remainTicket));
         editRemainTicket.setEnabled(false);
+        
+        editTicket.setOnKeyListener(new View.OnKeyListener() {
+			
+			public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
+				numberTicket = editTicket.getText().toString();
+				if (numberTicket.isEmpty()) {
+					editRemainTicket.setText(String.valueOf(remainTicket));
+				} else {
+					editRemainTicket.setText(String.valueOf(remainTicket + Integer.parseInt(numberTicket)));
+				}
+				return false;
+			}
+		});
         
         buttonWrite.setOnClickListener(new View.OnClickListener() {
 			
