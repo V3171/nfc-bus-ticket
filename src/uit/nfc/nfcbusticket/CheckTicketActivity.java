@@ -94,7 +94,7 @@ public class CheckTicketActivity extends Activity {
 					
 					AlertDialog OkDialog = new AlertDialog.Builder(context).create();
 					OkDialog.setTitle("Notice");
-					OkDialog.setMessage("Tag id " + tagId + " is remaining " + remainTicket + " times.\nPrevious checked time: " + prevTime + ".\nLast checked time:" + currentTime + ".\nWelcome you!");
+					OkDialog.setMessage("Tag id " + tagId + " is remaining " + remainTicket + " times.\nPrevious checked time: " + prevTime + ".\nLast checked time: " + currentTime + ".\nWelcome you!");
 					
 					OkDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 						
